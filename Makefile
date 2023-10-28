@@ -1,6 +1,9 @@
 CC=g++
 CFLAGS=-I.
-OBJ = srtplay.o
+OBJ = srtplay.o \
+			incommingMediaStream.o \
+			incommingRemoteMediaStream.o \
+			outgoingRemoteMediaStream.o
 
 SYS=_$(shell uname -s)
 
