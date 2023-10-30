@@ -73,19 +73,19 @@ int IncommingRemoteMediaStream::start()
     SRT_SOCKSTATUS state = srt_getsockstate(mServ);
     if (state != SRTS_CONNECTED || rlen > 0) // rlen > 0 - an error notification
     {
-        printf("srt_epoll_wait: reject reason %s\n", srt_rejectreason_str(srt_getrejectreason(rready)));
+        cout << "srt_epoll_wait: reject reason " << srt_rejectreason_str(srt_getrejectreason(rready)) << endl;
         return 0;
     }
 
     if (wlen != 1 || wready != mServ)
     {
-        printf("srt_epoll_wait: wlen %d, wready %d, socket %d\n", wlen, wready, mServ);
+        cout << "srt_epoll_wait: wlen " << wlen << ", wready " << wready << ", socket " << endl;
         return 0;
     }
   }
   else
   {
-    printf("srt_connect: %s\n", srt_getlasterror_str());
+    cout << "srt_connect: " << srt_getlasterror_str() << endl;
     return 0;
   }
 
