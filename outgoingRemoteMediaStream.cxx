@@ -120,16 +120,19 @@ int OutgoingRemoteMediaStream::start()
                         clientservice, sizeof(clientservice), NI_NUMERICHOST|NI_NUMERICSERV);
             cout << "new connection: " << clienthost << ":" << clientservice << endl;
 
-            int events = SRT_EPOLL_IN | SRT_EPOLL_ERR;
+            int events = SRT_EPOLL_OUT | SRT_EPOLL_ERR;
             if (SRT_ERROR == srt_epoll_add_usock(mEpid, fhandle, &events))
             {
                cout << "srt_epoll_add_usock: " << srt_getlasterror_str() << endl;
                return 0;
             }
-            cout << "sending data .." << endl;
+         }
+         else
+         {
+           cout << "sending data .." << endl;
 
-            char frame[] = {'A','C','E'};
-            int len = 3;
+           char frame[] = {'A','C','E'};
+           int len = 3;
 
             while (true)
             {
@@ -142,10 +145,6 @@ int OutgoingRemoteMediaStream::start()
               sleep(1);
             }
 
-         }
-         else
-         {
-            cout << "receiving .. \n";
          }
       }
    }

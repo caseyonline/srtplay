@@ -23,7 +23,7 @@ int main(int ac, char* av[]) {
     }
   else if (strcmp(av[1],"-rmtrec") == 0)
   {
-    IncommingRemoteMediaStream *stream = new IncommingRemoteMediaStream("9000","172.16.12.128");
+    IncommingRemoteMediaStream *stream = new IncommingRemoteMediaStream("9000","192.168.1.234");
     stream->start();
   }
   else if (strcmp(av[1],"-rmtsnd") == 0)
