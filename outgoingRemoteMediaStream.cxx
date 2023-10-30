@@ -120,31 +120,36 @@ int OutgoingRemoteMediaStream::start()
                         clientservice, sizeof(clientservice), NI_NUMERICHOST|NI_NUMERICSERV);
             cout << "new connection: " << clienthost << ":" << clientservice << endl;
 
+            /*
             int events = SRT_EPOLL_OUT | SRT_EPOLL_ERR;
             if (SRT_ERROR == srt_epoll_add_usock(mEpid, fhandle, &events))
             {
                cout << "srt_epoll_add_usock: " << srt_getlasterror_str() << endl;
                return 0;
             }
+            */
+
+            cout << "sending data .." << endl;
+
+            char frame[] = {'A','C','E'};
+            int len = 3;
+
+             while (true)
+             {
+               int ttl = 4000;
+
+               if (SRT_ERROR == srt_sendmsg(fhandle, (const char *)frame, len, ttl, false))
+               {
+                 cout << "SRT ERROR: " << srt_getlasterror_str() << endl;
+               }
+               sleep(1);
+             }
+
+
          }
          else
          {
-           cout << "sending data .." << endl;
-
-           char frame[] = {'A','C','E'};
-           int len = 3;
-
-            while (true)
-            {
-              int ttl = 4000;
-
-              if (SRT_ERROR == srt_sendmsg(s, (const char *)frame, len, ttl, false))
-              {
-                cout << "SRT ERROR: " << srt_getlasterror_str() << endl;
-              }
-              sleep(1);
-            }
-
+            ;
          }
       }
    }
