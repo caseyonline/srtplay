@@ -3,7 +3,8 @@ CFLAGS=-I.
 OBJ = srtplay.o \
 			incommingMediaStream.o \
 			incommingRemoteMediaStream.o \
-			outgoingRemoteMediaStream.o
+			outgoingRemoteMediaStream.o \
+			outgoingRemoteMediaStream2.o
 
 SYS=_$(shell uname -s)
 
