@@ -16,12 +16,39 @@ int main(int ac, char* av[]) {
 
   //printf("hello SRT: %s\n",av[1]);
   if (ac < 2)
-    printf("srtplay [ -rec | -rmtrec | -rmtsnd | -rtmsnd2 ]\n");
+    printf("srtplay [ -rec | -rmtrec | -rmtsnd | -rtmsnd2 | -broad ]\n");
   else if (strcmp(av[1],"-rec") == 0)
     {
+      char frame[1500];
+
       IncommingMediaStream *stream = new IncommingMediaStream("9000");
       stream->start();
+      while(true)
+      {
+        if (stream->process(frame, 1500) == 0)
+          break;
+        printf("X");
+      }
     }
+  else if (strcmp(av[1], "-broad") == 0)
+  {
+    char frame[1500];
+
+    IncommingMediaStream *inStream = new IncommingMediaStream("9000");
+    inStream->start();
+    OutgoingRemoteMediaStream2 *outStream = new OutgoingRemoteMediaStream2("9001");
+    outStream->start();
+
+    while (true)
+    {
+      int ret;
+      if ((ret = inStream->process(frame, 1500)) == 0)
+        break;
+      if (outStream->process(frame, ret) == 0)
+        break;
+    }
+  }
+
   else if (strcmp(av[1],"-rmtrec") == 0)
   {
     IncommingRemoteMediaStream *stream = new IncommingRemoteMediaStream("9000","104.237.152.26");
@@ -34,11 +61,13 @@ int main(int ac, char* av[]) {
   }
   else if (strcmp(av[1],"-rmtsnd2") == 0)
   {
+    char frame[1500];
+
     OutgoingRemoteMediaStream2 *stream = new OutgoingRemoteMediaStream2("9000");
     stream->start();
     while (true)
     {
-      if (stream->process() == 0)
+      if (stream->process(frame, 1500) == 0)
         break;
     }
   }

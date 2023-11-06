@@ -16,7 +16,7 @@ public:
   OutgoingRemoteMediaStream2(const char* port);
   ~OutgoingRemoteMediaStream2();
   int start();
-  int process();
+  int process(char *frame, int frameSize);
   //void process(const char* frame, int len);
 
 private:

@@ -9,6 +9,7 @@ public:
   IncommingMediaStream(const char* port);
   ~IncommingMediaStream();
   int start();
+  int process(char *frame, int frameSize);
 
 private:
   const char* mPort;

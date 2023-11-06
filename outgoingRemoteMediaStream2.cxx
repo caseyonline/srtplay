@@ -81,13 +81,13 @@ int OutgoingRemoteMediaStream2::start()
    return 1;
  }
 
- int OutgoingRemoteMediaStream2::process()
+ int OutgoingRemoteMediaStream2::process(char *frame, int frameSize)
  {
    const int srtrfdslenmax = 100;
    SRTSOCKET srtrfds[srtrfdslenmax];
    int srtrfdslen = srtrfdslenmax;
 
-   int n = srt_epoll_wait(mEpid, &srtrfds[0], &srtrfdslen, 0, 0, 100, 0, 0, 0, 0);
+   int n = srt_epoll_wait(mEpid, &srtrfds[0], &srtrfdslen, 0, 0, 1, 0, 0, 0, 0);
 
    for(int i = 0; i < n; i++)
    {
@@ -151,19 +151,19 @@ int OutgoingRemoteMediaStream2::start()
    {
       if (mConnections[i].srtSock != SRT_INVALID_SOCK)
       {
-        cout << "sending data .." << endl;
+        //cout << "sending data .." << endl;
 
-        char frame[] = {'A','C','E'};
-        int len = 3;
+        //char frame[] = {'A','C','E'};
+        //int len = 3;
 
         int ttl = 4000;
 
-        if (SRT_ERROR == srt_sendmsg(mConnections[i].srtSock, (const char *)frame, len, ttl, false))
+        if (SRT_ERROR == srt_sendmsg(mConnections[i].srtSock, (const char *)frame, frameSize, ttl, false))
         {
           cout << "SRT ERROR: " << srt_getlasterror_str() << endl;
         }
 
-        usleep(100000);
+        //usleep(100000);
 
       }
    }
