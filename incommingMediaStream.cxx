@@ -127,9 +127,9 @@ int IncommingMediaStream::process(char *frame, int frameSize)
             cout << "srt_epoll_add_usock: " << srt_getlasterror_str() << endl;
             return 0;
           }
-        }
-        else
-        {
+      }
+      else
+      {
           int ret = srt_recvmsg(s, frame, frameSize);
           if (SRT_ERROR == ret)
           {
@@ -140,10 +140,10 @@ int IncommingMediaStream::process(char *frame, int frameSize)
             }
             return 0;
           }
-            //printf("-%i-",ret);
-            return ret;
-         }
+          //printf("-%i-",ret);
+          return ret;
       }
-   return 1;
+   }
+   return -1;
 
 }

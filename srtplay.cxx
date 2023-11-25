@@ -44,8 +44,9 @@ int main(int ac, char* av[]) {
       int ret;
       if ((ret = inStream->process(frame, 1500)) == 0)
         break;
-      if (outStream->process(frame, ret) == 0)
-        break;
+      if (ret > 0)
+        if (outStream->process(frame, ret) == 0)
+          break;
     }
   }
 
