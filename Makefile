@@ -4,7 +4,8 @@ OBJ = srtplay.o \
 			incommingMediaStream.o \
 			incommingRemoteMediaStream.o \
 			outgoingRemoteMediaStream.o \
-			outgoingRemoteMediaStream2.o
+			outgoingRemoteMediaStream2.o \
+			socket.o
 
 SYS=_$(shell uname -s)
 

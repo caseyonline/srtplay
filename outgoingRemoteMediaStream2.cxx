@@ -40,7 +40,7 @@ int OutgoingRemoteMediaStream2::start()
     return 0;
   }
 
-  mSfd = srt_create_socket();
+  mSfd = srt_create_socket();  cout << mSfd << endl;
   if (mSfd == SRT_INVALID_SOCK) {
     cout << "srt_socket: " << srt_getlasterror_str() << endl;
     return 0;
@@ -83,6 +83,7 @@ int OutgoingRemoteMediaStream2::start()
 
  int OutgoingRemoteMediaStream2::process(char *frame, int frameSize)
  {
+   //cout << "Out" << mSfd << endl;
    const int srtrfdslenmax = 100;
    SRTSOCKET srtrfds[srtrfdslenmax];
    int srtrfdslen = srtrfdslenmax;
@@ -156,8 +157,9 @@ int OutgoingRemoteMediaStream2::start()
         //char frame[] = {'A','C','E'};
         //int len = 3;
 
-        int ttl = 4000;
+        int ttl = 10; //4000;
 
+        //cout << "Snd" << mConnections[i].srtSock << endl;
         if (SRT_ERROR == srt_sendmsg(mConnections[i].srtSock, (const char *)frame, frameSize, ttl, false))
         {
           cout << "SRT ERROR: " << srt_getlasterror_str() << endl;

@@ -21,7 +21,7 @@ IncommingMediaStream::~IncommingMediaStream()
 int IncommingMediaStream::start()
 {
 
-  srt_startup();
+  int r = srt_startup();    printf("\nsrt_startup: %i\n",r);
   srt_setloglevel(srt_logging::LogLevel::debug);
 
   addrinfo hints;
@@ -37,7 +37,7 @@ int IncommingMediaStream::start()
     return 0;
   }
 
-  mSfd = srt_create_socket();
+  mSfd = srt_create_socket(); cout << mSfd << endl;
   if (mSfd == SRT_INVALID_SOCK) {
     cout << "srt_socket: " << srt_getlasterror_str() << endl;
     return 0;
@@ -80,6 +80,7 @@ int IncommingMediaStream::start()
 
 int IncommingMediaStream::process(char *frame, int frameSize)
 {
+   //cout << "In " << mSfd << endl;
    const int srtrfdslenmax = 100;
    SRTSOCKET srtrfds[srtrfdslenmax];
 
@@ -130,6 +131,7 @@ int IncommingMediaStream::process(char *frame, int frameSize)
       }
       else
       {
+          //cout << "Rec" << s << endl;
           int ret = srt_recvmsg(s, frame, frameSize);
           if (SRT_ERROR == ret)
           {
@@ -140,7 +142,7 @@ int IncommingMediaStream::process(char *frame, int frameSize)
             }
             return 0;
           }
-          //printf("-%i-",ret);
+          //printf("%02X\n",(unsigned char)frame[1000]);
           return ret;
       }
    }
