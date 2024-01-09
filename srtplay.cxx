@@ -22,7 +22,7 @@ int main(int ac, char* av[]) {
 
   //printf("hello SRT: %s\n",av[1]);
   if (ac < 2)
-    printf("srtplay [ -rec | -rmtrec | -rmtsnd | -rtmsnd2 | -broad | -socketOut | socketIn ]\n");
+    printf("srtplay [ -rec | -rmtrec | -rmtsnd | -rtmsnd2 | -broad | -streamIn | -streamOut | -socketOut | -socketIn ]\n");
   else if (strcmp(av[1],"-rec") == 0)
     {
       char frame[1500];
@@ -56,6 +56,47 @@ int main(int ac, char* av[]) {
         }
     }
   }
+  else if (strcmp(av[1], "-streamIn") == 0)
+  {
+    char frame[1500];
+
+    IncommingMediaStream *inStream = new IncommingMediaStream("9000");
+    inStream->start();
+
+    mySocket sock(SOCKET_PORT);
+    sock.initSend();
+
+    while(true)
+    {
+      int ret;
+      if ((ret = inStream->process(frame, 1500)) == 0)
+        break;
+      if (ret > 0) {
+        sock.send(frame, ret);
+      }
+    }
+  }
+  else if (strcmp(av[1], "-streamOut") == 0)
+  {
+    char frame[1500];
+
+    OutgoingRemoteMediaStream2 *outStream = new OutgoingRemoteMediaStream2("9001");
+    outStream->start();
+
+    mySocket sock(SOCKET_PORT);
+
+    if (sock.initRec() < 0)
+      return 0;
+
+    while(true)
+    {
+      int n = sock.receive(frame, 1500);
+      if (n > 0)
+        if (outStream->process(frame, n) == 0)
+          break;
+    }
+  }
+
 
   else if (strcmp(av[1],"-rmtrec") == 0)
   {
@@ -109,64 +150,23 @@ void socketOut() {
   sock.send(hello, strlen(hello));
   sock.send(hello2, strlen(hello2));
   sock.send(hello3, strlen(hello3));
-  /*
-  if ( (client_fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
-  {
-    cout << "Socket creation error" << endl;
-    return;
-  }
 
-  serv_addr.sin_family = AF_INET;
-  serv_addr.sin_port = htons(SOCKET_PORT);
-
-  if (inet_pton(AF_INET, "127.0.0.1", &serv_addr.sin_addr) <= 0)
-  {
-    cout << "invalid address" << endl;
-    return;
-  }
-
-  sendto(client_fd, hello, strlen(hello), 0, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
-  sendto(client_fd, hello, strlen(hello2), 0, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
-  sendto(client_fd, hello, strlen(hello3), 0, (struct sockaddr*)&serv_addr, sizeof(serv_addr));
-  cout << "data sent" << endl;
-
-  close(client_fd);
-  */
 }
-
-
 
 void socketIn() {
 
-  int server_fd, new_socket;
-  struct sockaddr_in address, client_addr;
-  socklen_t addrlen = sizeof(address);
   char buf[1024];
 
-  if ( (server_fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0)
-  {
-    cout << "Socket creation error" << endl;
+  mySocket sock(SOCKET_PORT);
+
+  if (sock.initRec() < 0)
     return;
-  }
-
-  address.sin_family = AF_INET;
-  address.sin_addr.s_addr = INADDR_ANY;
-  address.sin_port = htons(SOCKET_PORT);
-
-  if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0)
-  {
-    cout << "bind error" << endl;
-    return;
-  }
-
-  socklen_t len = sizeof(client_addr);
 
   while(true)
   {
-    int n = (int)recvfrom(server_fd, buf, sizeof(buf), MSG_DONTWAIT, (struct sockaddr*)&client_addr, &len);
-    cout << "bytes=" << n << endl;
+    int n = sock.receive(buf, sizeof(buf));
+    cout << n << endl;
     sleep(1);
   }
-
 
 }
